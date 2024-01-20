@@ -1,113 +1,144 @@
 import Image from "next/image";
+import { Content, Rail, Root, Section } from "./types";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/collapsible";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/card";
 
-export default function Home() {
+export default async function Home() {
+  const res = await fetch("https://api.evsports.opentv.com/contentdelivery/v2/templateviews/Videos-IBU", {
+    headers: {
+      Authorization: `Bearer ${process.env.TOKEN}`,
+      "Nagra-Device-Type": "Android,IOS",
+      "Nagra-Target": "everything",
+      // needed a bit of trial and error to figure out that this was needed
+      "accept-language": "en_US",
+    },
+  });
+  const data = (await res.json()) as Root;
+
+  // const worldCups = data.rails.filter((i) =>
+  //   i.sections.some((s) => s.contents.some((c) => c?.Categories?.some((cc) => cc === "Age:Senior")))
+  // );
+  return <RenderRoot root={data} />;
+}
+
+const RenderRoot = ({ root }: { root: Root }) => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <div className="flex flex-col gap-2 p-2">
+      {root.rails.map((rail, ix) => (
+        <RenderRail rail={rail} key={ix} />
+      ))}
+    </div>
   );
+};
+
+const RenderRail = ({ rail }: { rail: Rail }) => {
+  const shared = sharedRailCategories(rail);
+  // console.log("rail", rail.name);
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{rail.name}</CardTitle>
+        <CardDescription>
+          <RenderCategories categories={shared} />
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Collapsible>
+          <CollapsibleTrigger>Details</CollapsibleTrigger>
+          <CollapsibleContent>
+            {rail.sections.map((section, ix) => (
+              <RenderSection key={ix} section={section} shared={shared} />
+            ))}
+          </CollapsibleContent>
+        </Collapsible>
+      </CardContent>
+    </Card>
+  );
+};
+
+const compare = <T extends string | number | Date>(a: T, b: T) => (a < b ? -1 : a > b ? 1 : 0);
+
+const RenderCategories = ({ categories }: { categories: string[] }) =>
+  !!categories.length && (
+    <ul>
+      {categories.sort(compare).map((c, ix) => (
+        <li key={ix}>{c}</li>
+      ))}
+    </ul>
+  );
+
+const RenderSection = ({ section, shared: railShared }: { section: Section; shared: string[] }) => {
+  const shared = sharedSectionCategories(section);
+  const showShared = shared.filter((i) => !railShared.includes(i));
+
+  // console.log("section", { section });
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{section.name}</CardTitle>
+        <CardDescription>
+          <RenderCategories categories={showShared} />
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Collapsible>
+          <CollapsibleTrigger>Details</CollapsibleTrigger>
+          <CollapsibleContent>
+            {section.contents.map(
+              (content, ix) => content && <RenderContent key={ix} content={content} shared={shared} />
+            )}
+          </CollapsibleContent>
+        </Collapsible>
+      </CardContent>
+    </Card>
+  );
+};
+
+const RenderContent = ({ content, shared }: { content: Content; shared: string[] }) => {
+  // console.log({ content });
+  const categories = content.Categories?.filter((i) => !shared.includes(i)) || [];
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{content.title || content.Title}</CardTitle>
+        <CardDescription>
+          <RenderCategories categories={categories} />
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p>{content.Synopsis}</p>
+        <pre>{JSON.stringify(content, null, 2)}</pre>
+      </CardContent>
+    </Card>
+  );
+  // return (
+  //   <div>
+  //     <h3>{content.title || content.Title}</h3>
+  //     <p>{content.Synopsis}</p>
+  //     {!!categories.length && (
+  //       <ul>
+  //         {categories.map((c, ix) => (
+  //           <li key={ix}>{c}</li>
+  //         ))}
+  //       </ul>
+  //     )}
+  //   </div>
+  // );
+};
+
+function getShared(data: string[][]) {
+  const shared = new Set(data.flat());
+  for (const d of data) {
+    for (const c of Array.from(shared.values())) {
+      if (!d.includes(c)) shared.delete(c);
+    }
+  }
+  return Array.from(shared.values());
+}
+
+function sharedRailCategories(rail: Rail) {
+  return getShared(rail.sections.map((s) => sharedSectionCategories(s)));
+}
+function sharedSectionCategories(section: Section) {
+  return getShared(section.contents.map((c) => c?.Categories || []).filter((c) => c.length > 0));
 }
